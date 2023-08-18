@@ -1,45 +1,47 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerMovement : MonoBehaviour
 {
-
-    private Vector3 input = new Vector3();
-    [SerializeField] Rigidbody rb;
     [SerializeField] private float moveSpeed = 5;
+    Rigidbody rb;
+    Vector3 directionInputs;
+    Vector3 movementDirection;
 
-    void Update()
+    private void Awake()
     {
-        GetInput();
-        Look();
+        rb = GetComponent<Rigidbody>();
     }
 
     private void FixedUpdate()
     {
         Move();
-    }
-
-    private void GetInput()
-    {
-        input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        Look();
     }
 
     private void Move()
     {
-        if (input != Vector3.zero)
-        {
-            rb.MovePosition(transform.position + transform.forward * moveSpeed * Time.deltaTime);
-        }
+        float horizontalInput = Input.GetAxisRaw("Horizontal");
+        float verticalInput = Input.GetAxisRaw("Vertical");
+
+        Vector3 directionInputs = new Vector3(horizontalInput, 0, verticalInput).normalized;
+
+        Vector3 movementDirection = (Quaternion.Euler(0, 45, 0) * directionInputs).normalized;
+
+        Vector3 velocity = movementDirection * moveSpeed;
+        rb.velocity = new Vector3(velocity.x, 0, velocity.z);
     }
 
     private void Look()
     {
-        if (input != Vector3.zero)
-        {
-            var relative = (transform.position + input) - transform.position;
-            var rotation = Quaternion.LookRotation(relative, Vector3.up);
-            transform.rotation = rotation;
+        Vector3 movementDirection = rb.velocity.normalized;
+
+        if(movementDirection != Vector3.zero)
+        {   
+            Quaternion targetRotation = Quaternion.LookRotation(movementDirection);
+            rb.rotation = Quaternion.Lerp(rb.rotation, targetRotation, 18 * Time.deltaTime);
         }
     }
 }
