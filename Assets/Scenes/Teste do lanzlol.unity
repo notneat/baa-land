@@ -467,7 +467,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b9b284ec5e76404fb69c7d2e522a338, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 775973041}
+  agent: {fileID: 0}
+  range: 30
+  centrePoint: {fileID: 424076507}
 --- !u!195 &775973041
 NavMeshAgent:
   m_ObjectHideFlags: 0
