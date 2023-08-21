@@ -22,6 +22,10 @@ public class World : MonoBehaviour
     [SerializeField] private GameObject tilePrefab;
     [SerializeField] private GameObject treePrefab;
 
+    [Header("Feature Shelfs")]
+    [SerializeField] private GameObject treeFeatureShelf;
+    [SerializeField] private GameObject lakeFeatureShelf;
+    [SerializeField] private GameObject tileFeatureShelf;
 
     private void Start()
     {
@@ -35,28 +39,30 @@ public class World : MonoBehaviour
         {
             for (int z = 0; z < worldSize; z++)
             {
-                Vector3 spawnPosition = new Vector3(x * 2, -0.1f, z * 2);
+                Vector3 spawnPosition = new Vector3(x * 2, 0, z * 2);
 
                 float perlinNoise = GetPerlinNoiseValue(x, z, perlinScale, perlinOffset);
-                Debug.Log(perlinNoise);
 
                 SpawnFeatures(perlinNoise, spawnPosition);
 
-                GameObject tile = Instantiate(tilePrefab, spawnPosition, Quaternion.identity);
-                tile.transform.SetParent(this.transform);
+                Vector3 featureSpawnPosition = new Vector3(spawnPosition.x, 0, spawnPosition.y);
 
-                MeshRenderer tileRenderer = tile.GetComponent<MeshRenderer>();
-                Color tileColor = Color.Lerp(Color.black, Color.white, perlinNoise);
+                bool canSpawnTiles = CanSpawnTile(featureSpawnPosition);
 
-                tileRenderer.material.color = tileColor;
+                if (canSpawnTiles)
+                {
+                    GameObject tile = Instantiate(tilePrefab, spawnPosition, Quaternion.identity);
+                    tile.transform.SetParent(tileFeatureShelf.transform);
+
+                    tile.name = perlinNoise.ToString();
+                }
             }
         }
     }
 
     private void SpawnFeatures(float perlinNoise, Vector3 spawnPosition)
-    {
-
-        Vector3 featurePosition = new Vector3(spawnPosition.x, + 8, spawnPosition.z);
+    { 
+        Vector3 freaturePosition = new Vector3(spawnPosition.x, 0, spawnPosition.z);
 
         float randomValue = Random.value;
 
@@ -64,19 +70,17 @@ public class World : MonoBehaviour
         {
             if (perlinNoise >= minTreeThreshold && perlinNoise < maxTreeThreshold)
             {
-                GameObject tree = Instantiate(treePrefab, featurePosition, Quaternion.identity);
-                tree.transform.SetParent(this.transform);
+                GameObject tree = Instantiate(treePrefab, freaturePosition, Quaternion.identity);
+                tree.transform.SetParent(treeFeatureShelf.transform);
             }
         }
         
-        else if (perlinNoise >= minLakeThreshold && perlinNoise < maxLakeThreshold)
+        if (perlinNoise >= minLakeThreshold && perlinNoise < maxLakeThreshold)
         {
-            GameObject lake = Instantiate(lakePrefab, featurePosition, Quaternion.identity);
-            lake.transform.SetParent(this.transform);
+            GameObject lake = Instantiate(lakePrefab, freaturePosition, Quaternion.identity);
+            lake.transform.SetParent(lakeFeatureShelf.transform);
         }
-        
     }
-
 
     private float GetPerlinNoiseValue(int x, int z, float noiseScale, Vector2 noiseOffset)
     {
@@ -91,5 +95,20 @@ public class World : MonoBehaviour
         perlinOffset = new Vector2(Random.Range(-1000, 1000), Random.Range(-1000, 1000));
 
         return perlinOffset;
+    }
+
+    private bool CanSpawnTile(Vector3 featurePosition)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(featurePosition, Vector3.down, out hit))
+        {
+            Debug.DrawRay(featurePosition, Vector3.down * hit.distance, Color.red);
+
+            if (hit.distance < 1.0f)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
