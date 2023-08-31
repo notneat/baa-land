@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
-    [SerializeField] private float worldSize = 25;
+    [Header("Values")]
+    [SerializeField] private float worldSize;
     [SerializeField] private float perlinScale;
     [SerializeField] private Vector2 perlinOffset;
+    [SerializeField] private float minDistanceFromHouse;
 
     [Header("Thresholds")]
 
@@ -21,11 +23,14 @@ public class World : MonoBehaviour
     [SerializeField] private GameObject lakePrefab;
     [SerializeField] private GameObject tilePrefab;
     [SerializeField] private GameObject treePrefab;
+    [SerializeField] private GameObject housePrefab;
 
     [Header("Feature Shelfs")]
     [SerializeField] private GameObject treeFeatureShelf;
     [SerializeField] private GameObject lakeFeatureShelf;
     [SerializeField] private GameObject tileFeatureShelf;
+
+    private bool houseSpawned = false;
 
     private void Start()
     {
@@ -35,11 +40,15 @@ public class World : MonoBehaviour
 
     private void SpawnTiles()
     {
+
+        Vector3 offset = new Vector3(worldSize * 2 * 0.5f, 0, worldSize * 2 * 0.5f);
+
         for (int x = 0; x < worldSize; x++)
         {
             for (int z = 0; z < worldSize; z++)
             {
-                Vector3 spawnPosition = new Vector3(x * 2, 0, z * 2);
+
+                Vector3 spawnPosition = new Vector3(x * 2, 0, z * 2) - offset;
 
                 float perlinNoise = GetPerlinNoiseValue(x, z, perlinScale, perlinOffset);
 
@@ -64,21 +73,39 @@ public class World : MonoBehaviour
     { 
         Vector3 freaturePosition = new Vector3(spawnPosition.x, 0, spawnPosition.z);
 
-        float randomValue = Random.value;
-
-        if(randomValue < treeSpawnChance)
+        if (!houseSpawned)
         {
-            if (perlinNoise >= minTreeThreshold && perlinNoise < maxTreeThreshold)
+            Vector3 housePosition = new Vector3(0, 0, 6);
+
+            GameObject house = Instantiate(housePrefab, housePosition, Quaternion.identity);
+            house.transform.SetParent(this.transform);
+            houseSpawned = true;
+        }
+
+        float distanceToHouse = Vector3.Distance(spawnPosition, GetHousePosition());
+
+        if (distanceToHouse > minDistanceFromHouse)
+        {
+            float randomValue = Random.value;
+
+            if (randomValue < treeSpawnChance)
             {
-                GameObject tree = Instantiate(treePrefab, freaturePosition, Quaternion.identity);
-                tree.transform.SetParent(treeFeatureShelf.transform);
+                if (perlinNoise >= minTreeThreshold && perlinNoise < maxTreeThreshold)
+                {
+                    GameObject tree = Instantiate(treePrefab, freaturePosition, Quaternion.identity);
+                    tree.transform.SetParent(treeFeatureShelf.transform);
+                }
+            }
+
+            if (perlinNoise >= minLakeThreshold && perlinNoise < maxLakeThreshold)
+            {
+                GameObject lake = Instantiate(lakePrefab, freaturePosition, Quaternion.identity);
+                lake.transform.SetParent(lakeFeatureShelf.transform);
             }
         }
-        
-        if (perlinNoise >= minLakeThreshold && perlinNoise < maxLakeThreshold)
+        else
         {
-            GameObject lake = Instantiate(lakePrefab, freaturePosition, Quaternion.identity);
-            lake.transform.SetParent(lakeFeatureShelf.transform);
+            Debug.LogWarning("Cant spawn features, since: " + distanceToHouse);
         }
     }
 
@@ -95,6 +122,16 @@ public class World : MonoBehaviour
         perlinOffset = new Vector2(Random.Range(-1000, 1000), Random.Range(-1000, 1000));
 
         return perlinOffset;
+    }
+
+    private Vector3 GetHousePosition()
+    {
+        GameObject houseObject = GameObject.FindGameObjectWithTag("House");
+        Vector3 housePosition = houseObject.transform.position;
+        Debug.Log(houseObject);
+        Debug.Log(housePosition);
+
+        return housePosition;
     }
 
     private bool CanSpawnTile(Vector3 featurePosition)
