@@ -6,6 +6,8 @@ using TMPro;
 
 public class InventoryManager : MonoBehaviour
 {
+    [SerializeField] private Canvas InventoryGUI;
+
     [SerializeField] private GameObject itemCursor;
 
     [SerializeField] private GameObject slotHolder;
@@ -42,12 +44,35 @@ public class InventoryManager : MonoBehaviour
         }
 
         RefreshUI();
+
+        InventoryGUI.enabled = false;
     }
 
     private void Update()
     {
         itemCursor.SetActive(isMovingItem);
         itemCursor.transform.position = Input.mousePosition;
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            if (InventoryGUI.enabled)
+            {
+                if(isMovingItem)
+                { 
+                    EndItemMove();
+                    InventoryGUI.enabled = false;
+                }
+                else
+                {
+                    InventoryGUI.enabled = false;
+                }
+            }
+            else
+            {
+                InventoryGUI.enabled = true;
+            }
+            RefreshUI();
+        }
 
         if (isMovingItem)
         {
