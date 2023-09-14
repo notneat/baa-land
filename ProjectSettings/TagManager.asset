@@ -8,6 +8,8 @@ TagManager:
   - Tile
   - House
   - Feature
+  - Swing
+  - Tree
   layers:
   - Default
   - TransparentFX

@@ -71,7 +71,7 @@ public class World : MonoBehaviour
 
     private void SpawnFeatures(float perlinNoise, Vector3 spawnPosition)
     { 
-        Vector3 freaturePosition = new Vector3(spawnPosition.x, 0, spawnPosition.z);
+        Vector3 featurePosition = new Vector3(spawnPosition.x, 0, spawnPosition.z);
 
         if (!houseSpawned)
         {
@@ -92,14 +92,16 @@ public class World : MonoBehaviour
             {
                 if (perlinNoise >= minTreeThreshold && perlinNoise < maxTreeThreshold)
                 {
-                    GameObject tree = Instantiate(treePrefab, freaturePosition, Quaternion.identity);
+                    Vector3 treePosition = new Vector3(featurePosition.x, featurePosition.y + 2, featurePosition.z);
+
+                    GameObject tree = Instantiate(treePrefab, treePosition, Quaternion.identity);
                     tree.transform.SetParent(treeFeatureShelf.transform);
                 }
             }
 
             if (perlinNoise >= minLakeThreshold && perlinNoise < maxLakeThreshold)
             {
-                GameObject lake = Instantiate(lakePrefab, freaturePosition, Quaternion.identity);
+                GameObject lake = Instantiate(lakePrefab, featurePosition, Quaternion.identity);
                 lake.transform.SetParent(lakeFeatureShelf.transform);
             }
         }
