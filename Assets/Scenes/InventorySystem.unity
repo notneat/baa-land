@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028326, g: 0.22571333, b: 0.30692202, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -156,7 +156,7 @@ Transform:
   - {fileID: 326201536}
   - {fileID: 1781193412}
   - {fileID: 1450176352}
-  - {fileID: 184587151}
+  - {fileID: 2051016832}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &50921010
@@ -828,18 +828,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 106472544}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &184587150 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8649151940543688577, guid: 2336699c61b2b43ebb8037faf7e543f2,
-    type: 3}
-  m_PrefabInstance: {fileID: 2051016831}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &184587151 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4468089581210913149, guid: 2336699c61b2b43ebb8037faf7e543f2,
-    type: 3}
-  m_PrefabInstance: {fileID: 2051016831}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &243151043
 GameObject:
   m_ObjectHideFlags: 0
@@ -1142,7 +1130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseIndicator: {fileID: 1781193411}
-  cellIndicator: {fileID: 184587150}
+  cellIndicator: {fileID: 0}
   inputManager: {fileID: 50921011}
   grid: {fileID: 516019464}
   database: {fileID: 11400000, guid: 845b61da413674f12b4a7d4e9f974b28, type: 2}
@@ -1880,19 +1868,26 @@ MonoBehaviour:
   perlinScale: 0.03
   perlinOffset: {x: 0, y: 0}
   minDistanceFromHouse: 24
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 0
+  waterMask:
+    serializedVersion: 2
+    m_Bits: 0
   minTreeThreshold: -1
   maxTreeThreshold: 0.5
   treeSpawnChance: 0.4
   minLakeThreshold: 0.6
   maxLakeThreshold: 1
+  tiles: []
   lakePrefab: {fileID: 4850859491327379254, guid: 5757b9289eb463540bac7e4731fd2858,
     type: 3}
   tilePrefab: {fileID: 918526242091838871, guid: 6ddd72e4c80922940b31bf36594804e7,
     type: 3}
-  treePrefab: {fileID: 3181324565709423357, guid: c0712734f2a5d44489f152641be57626,
-    type: 3}
+  treePrefabs: []
   housePrefab: {fileID: 3212770976473842168, guid: 45d827fb274a0e143a2154b7cf949f49,
     type: 3}
+  onGenerationComplete: {fileID: 0}
   treeFeatureShelf: {fileID: 804719256}
   lakeFeatureShelf: {fileID: 2044650061}
   tileFeatureShelf: {fileID: 2075211181}
@@ -3111,79 +3106,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1144377814}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1236835521
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1120776170118297125, guid: c0712734f2a5d44489f152641be57626,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.61151123
-      objectReference: {fileID: 0}
-    - target: {fileID: 1120776170118297125, guid: c0712734f2a5d44489f152641be57626,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1120776170118297125, guid: c0712734f2a5d44489f152641be57626,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 5.4108953
-      objectReference: {fileID: 0}
-    - target: {fileID: 1120776170118297125, guid: c0712734f2a5d44489f152641be57626,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1120776170118297125, guid: c0712734f2a5d44489f152641be57626,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1120776170118297125, guid: c0712734f2a5d44489f152641be57626,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1120776170118297125, guid: c0712734f2a5d44489f152641be57626,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1120776170118297125, guid: c0712734f2a5d44489f152641be57626,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1120776170118297125, guid: c0712734f2a5d44489f152641be57626,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1120776170118297125, guid: c0712734f2a5d44489f152641be57626,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3181324565709423357, guid: c0712734f2a5d44489f152641be57626,
-        type: 3}
-      propertyPath: m_Name
-      value: Tree
-      objectReference: {fileID: 0}
-    - target: {fileID: 3181324565709423357, guid: c0712734f2a5d44489f152641be57626,
-        type: 3}
-      propertyPath: m_TagString
-      value: Feature
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: c0712734f2a5d44489f152641be57626, type: 3}
 --- !u!1001 &1248461058
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4611,6 +4533,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2336699c61b2b43ebb8037faf7e543f2, type: 3}
+--- !u!4 &2051016832 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9138040731679515903, guid: 2336699c61b2b43ebb8037faf7e543f2,
+    type: 3}
+  m_PrefabInstance: {fileID: 2051016831}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2053159767
 GameObject:
   m_ObjectHideFlags: 0
@@ -5046,6 +4974,5 @@ SceneRoots:
   - {fileID: 521404231}
   - {fileID: 1815097174}
   - {fileID: 935526336}
-  - {fileID: 1236835521}
   - {fileID: 1952770181}
   - {fileID: 1083315421}

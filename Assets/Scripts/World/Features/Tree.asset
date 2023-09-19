@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f12988193adbfe49b14d95bd54be3d1, type: 3}
+  m_Name: Tree
+  m_EditorClassIdentifier: 
+  ID: 0
+  featureName: tree
+  minThreshold: -1
+  maxThreshold: 0.5
+  spawnChance: 0.2
+  positionOffset: {x: 0, y: 5, z: 0}
+  rotationOffset: {x: 0, y: -0.38268346, z: 0, w: 0.9238795}
+  prefab: {fileID: 8340746848934773895, guid: dfd82183385cc284797921ca8ac5cc71, type: 3}

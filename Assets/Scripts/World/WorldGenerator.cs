@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.Tilemaps;
 
 public class World : MonoBehaviour
 {
@@ -9,6 +11,9 @@ public class World : MonoBehaviour
     [SerializeField] private float perlinScale;
     [SerializeField] private Vector2 perlinOffset;
     [SerializeField] private float minDistanceFromHouse;
+    [SerializeField] private LayerMask groundMask;
+    [SerializeField] private LayerMask waterMask;
+    private bool worldGenerationComplete = false;
 
     [Header("Thresholds")]
 
@@ -20,10 +25,20 @@ public class World : MonoBehaviour
     [SerializeField] private float maxLakeThreshold;
 
     [Header("Prefabs")]
+
+    [SerializeField] private List<TileData> tiles = new List<TileData>();
+    [SerializeField] private List<Tile> tileInstances = new List<Tile>();
+
+    [SerializeField] private List<FeatureData> features = new List<FeatureData>();
+    [SerializeField] private List<Feature> featureInstances = new List<Feature>();
+
     [SerializeField] private GameObject lakePrefab;
     [SerializeField] private GameObject tilePrefab;
-    [SerializeField] private GameObject treePrefab;
+    [SerializeField] private GameObject[] treePrefabs;
     [SerializeField] private GameObject housePrefab;
+
+    [Header("Events")]
+    public GameEvent onGenerationComplete;
 
     [Header("Feature Shelfs")]
     [SerializeField] private GameObject treeFeatureShelf;
@@ -31,83 +46,164 @@ public class World : MonoBehaviour
     [SerializeField] private GameObject tileFeatureShelf;
 
     private bool houseSpawned = false;
+    private Vector3 housePosition;
+
+    private float expectedTilesAmount;
+    private int tilesSpawnedCount;
+    private int featuresSpawnedCount;
+    private int featuresThatCantSpawnCound;
+    private int tilesThatCantSpawnCount;
 
     private void Start()
     {
+        InitializeTiles();
+        expectedTilesAmount = worldSize * worldSize;
         GetRandomOffset();
         SpawnTiles();
     }
 
+    private void InitializeTiles()
+    {
+        foreach (TileData tileData in tiles)
+        {
+            Tile tileInstance = new Tile(tileData, tileData.ID, tileData.minThreshold, tileData.maxThreshold, tileData.tileName);
+            tileInstances.Add(tileInstance);
+        }
+    }
+    
     private void SpawnTiles()
     {
-
         Vector3 offset = new Vector3(worldSize * 2 * 0.5f, 0, worldSize * 2 * 0.5f);
+        
+        SpawnHouse();
 
         for (int x = 0; x < worldSize; x++)
         {
             for (int z = 0; z < worldSize; z++)
             {
-
                 Vector3 spawnPosition = new Vector3(x * 2, 0, z * 2) - offset;
-
-                float perlinNoise = GetPerlinNoiseValue(x, z, perlinScale, perlinOffset);
-
-                SpawnFeatures(perlinNoise, spawnPosition);
-
-                Vector3 featureSpawnPosition = new Vector3(spawnPosition.x, 0, spawnPosition.y);
-
-                bool canSpawnTiles = CanSpawnTile(featureSpawnPosition);
+                float perlinNoise = GetPerlinNoiseValue(x, z, perlinScale, perlinOffset); //TODO: Manipular perlin noise
+                bool canSpawnTiles = CanSpawnTile(spawnPosition);
 
                 if (canSpawnTiles)
                 {
-                    GameObject tile = Instantiate(tilePrefab, spawnPosition, Quaternion.identity);
-                    tile.transform.SetParent(tileFeatureShelf.transform);
+                    float distanceToHouse = GetDistanceFromHouse(spawnPosition);
 
-                    tile.name = perlinNoise.ToString();
+                    // Check if the distance to the house is greater than the minimum distance
+
+                    foreach (Tile tileInstance in tileInstances)
+                    {
+                        if (distanceToHouse > minDistanceFromHouse)
+                        {
+                            if (tileInstance.GetTileName() == "water")
+                            {
+                                if (perlinNoise >= tileInstance.GetMinThreshold() && perlinNoise <= tileInstance.GetMaxThreshold())
+                                {
+                                    GameObject tilePrefab = tileInstance.GetTile().prefab;
+                                    GameObject tile = Instantiate(tilePrefab, spawnPosition, Quaternion.identity);
+                                    tile.transform.SetParent(tileFeatureShelf.transform);
+                                    tile.name = tileInstance.GetTileName();
+                                    tilesSpawnedCount++;
+
+                                    if ((float)expectedTilesAmount < tilesSpawnedCount + featuresSpawnedCount)
+                                    {
+                                        WorldFinishedGenerating();
+                                    }
+
+                                    break; // Exit the loop after finding the matching tile.
+                                }
+                            }
+                        }
+                        if (tileInstance.GetTileName() == "ground")
+                        {
+                            if (perlinNoise >= tileInstance.GetMinThreshold() && perlinNoise <= tileInstance.GetMaxThreshold())
+                            {
+                                // Generate ground tile if it's within the threshold
+                                GameObject tilePrefab = tileInstance.GetTile().prefab;
+                                GameObject tile = Instantiate(tilePrefab, spawnPosition, Quaternion.identity);
+                                tile.transform.SetParent(tileFeatureShelf.transform);
+                                tile.name = tileInstance.GetTileName();
+                                tilesSpawnedCount++;
+
+                                if ((float)expectedTilesAmount < tilesSpawnedCount + featuresSpawnedCount)
+                                {
+                                    WorldFinishedGenerating();
+                                }
+
+                                break; // Exit the loop after finding the matching tile.
+                            }
+                        }
+                    }
                 }
+                SpawnFeatures(perlinNoise, spawnPosition);
             }
         }
     }
 
     private void SpawnFeatures(float perlinNoise, Vector3 spawnPosition)
-    { 
+    {
         Vector3 featurePosition = new Vector3(spawnPosition.x, 0, spawnPosition.z);
 
-        if (!houseSpawned)
-        {
-            Vector3 housePosition = new Vector3(0, 0, 6);
-
-            GameObject house = Instantiate(housePrefab, housePosition, Quaternion.identity);
-            house.transform.SetParent(this.transform);
-            houseSpawned = true;
-        }
-
-        float distanceToHouse = Vector3.Distance(spawnPosition, GetHousePosition());
+        float distanceToHouse = GetDistanceFromHouse(featurePosition);
 
         if (distanceToHouse > minDistanceFromHouse)
         {
-            float randomValue = Random.value;
-
-            if (randomValue < treeSpawnChance)
+            foreach (FeatureData featureData in features)
             {
-                if (perlinNoise >= minTreeThreshold && perlinNoise < maxTreeThreshold)
+                if (perlinNoise >= featureData.minThreshold && perlinNoise < featureData.maxThreshold)
                 {
-                    Vector3 treePosition = new Vector3(featurePosition.x, featurePosition.y + 2, featurePosition.z);
+                    float randomValue = Random.value;
 
-                    GameObject tree = Instantiate(treePrefab, treePosition, Quaternion.identity);
-                    tree.transform.SetParent(treeFeatureShelf.transform);
+                    if (randomValue < featureData.spawnChance)
+                    {
+                        GameObject featurePrefab = featureData.prefab;
+
+                        if (featurePrefab != null)
+                        {
+                            Vector3 featureSpawnPosition = new Vector3(featurePosition.x, featurePosition.y, featurePosition.z);
+
+                            // Initialize the zOffset
+                            float zOffset = 0f;
+
+                            // Check if ID is 0 or name is "tree" for height offset and random zOffset
+                            if (featureData.ID == 0 || featureData.featureName == "tree")
+                            {
+                                featureSpawnPosition.y += 5; // Apply height offset
+                                zOffset = Random.Range(-0.1f, 0.1f); // Apply zOffset for "tree"
+                            }
+
+                            featureSpawnPosition.z += zOffset; // Apply zOffset to the featureSpawnPosition.z
+
+                            GameObject feature = Instantiate(featurePrefab, featureSpawnPosition, featureData.rotationOffset);
+                            feature.transform.SetParent(lakeFeatureShelf.transform);
+                            featuresSpawnedCount++;
+                        }
+                    }
+
+                    break; // Exit the loop after finding the matching feature data.
                 }
-            }
-
-            if (perlinNoise >= minLakeThreshold && perlinNoise < maxLakeThreshold)
-            {
-                GameObject lake = Instantiate(lakePrefab, featurePosition, Quaternion.identity);
-                lake.transform.SetParent(lakeFeatureShelf.transform);
             }
         }
         else
         {
-            Debug.LogWarning("Cant spawn features, since: " + distanceToHouse);
+            featuresThatCantSpawnCound++;
+        }
+
+        if ((float)expectedTilesAmount < tilesSpawnedCount + featuresSpawnedCount)
+        {
+            WorldFinishedGenerating();
+        }
+    }
+
+    private void SpawnHouse()
+    {
+        if (!houseSpawned)
+        {
+            housePosition = new Vector3(0, 0, 6);
+
+            GameObject house = Instantiate(housePrefab, housePosition, Quaternion.identity);
+            house.transform.SetParent(this.transform);
+            houseSpawned = true;
         }
     }
 
@@ -126,28 +222,40 @@ public class World : MonoBehaviour
         return perlinOffset;
     }
 
-    private Vector3 GetHousePosition()
+    private float GetDistanceFromHouse(Vector3 position)
     {
-        GameObject houseObject = GameObject.FindGameObjectWithTag("House");
-        Vector3 housePosition = houseObject.transform.position;
-        Debug.Log(houseObject);
-        Debug.Log(housePosition);
-
-        return housePosition;
+        return Vector3.Distance(housePosition, position);
     }
 
     private bool CanSpawnTile(Vector3 featurePosition)
     {
-        RaycastHit hit;
-        if (Physics.Raycast(featurePosition, Vector3.down, out hit))
-        {
-            Debug.DrawRay(featurePosition, Vector3.down * hit.distance, Color.red);
+        Vector3 rayPosition = new Vector3(featurePosition.x, featurePosition.y + 5, featurePosition.z);
 
-            if (hit.distance < 1.0f)
-            {
-                return false;
-            }
+        Ray ray = new Ray(rayPosition, Vector3.down);
+
+        // Check if the raycast doesn't hit anything.
+        if (!Physics.Raycast(ray, out RaycastHit hit, 100f, waterMask))
+        {
+            return true;
         }
-        return true;
+        tilesThatCantSpawnCount++;
+        return false;
+    }
+
+    private void WorldFinishedGenerating()
+    {
+        if(!worldGenerationComplete)
+        {
+            Debug.Log("Amount of tiles spawned: " + tilesSpawnedCount);
+            Debug.Log("Amount of features spawned: " + featuresSpawnedCount);
+            int totalAmountOfObjects = tilesSpawnedCount + featuresSpawnedCount;
+            Debug.Log("Amount of total objects spawned: " + totalAmountOfObjects);
+
+            Debug.Log("Amount of tiles that couldn't spawn: " + tilesThatCantSpawnCount);
+            Debug.Log("Amount of features that couldn't spawn: " + featuresThatCantSpawnCound);
+            Debug.Log("World Generated");
+            worldGenerationComplete = true;
+            onGenerationComplete.Raise(this);
+        }
     }
 }

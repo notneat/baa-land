@@ -182,7 +182,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -25
+  near clip plane: -50
   far clip plane: 1000
   field of view: 60
   orthographic: 1
@@ -561,19 +561,37 @@ MonoBehaviour:
   perlinScale: 0.03
   perlinOffset: {x: 0, y: 0}
   minDistanceFromHouse: 16
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 8
+  waterMask:
+    serializedVersion: 2
+    m_Bits: 16
   minTreeThreshold: -1
   maxTreeThreshold: 0.5
   treeSpawnChance: 0.2
   minLakeThreshold: 0.6
   maxLakeThreshold: 1
+  tiles:
+  - {fileID: 11400000, guid: f3301267ec55ba74aaabfbaaeafc1f66, type: 2}
+  - {fileID: 11400000, guid: eaf9c192f192cd54c9f38e723a707dc8, type: 2}
+  tileInstances: []
+  features:
+  - {fileID: 11400000, guid: d959e251f6c003d48b54acd7d8b2b1a2, type: 2}
+  featureInstances: []
   lakePrefab: {fileID: 4850859491327379254, guid: 5757b9289eb463540bac7e4731fd2858,
     type: 3}
   tilePrefab: {fileID: 918526242091838871, guid: 6ddd72e4c80922940b31bf36594804e7,
     type: 3}
-  treePrefab: {fileID: 3181324565709423357, guid: c0712734f2a5d44489f152641be57626,
+  treePrefabs:
+  - {fileID: 8340746848934773895, guid: dfd82183385cc284797921ca8ac5cc71, type: 3}
+  - {fileID: 5907764983232781553, guid: fa6a552beacd3674aa48576fe4acc7bb, type: 3}
+  - {fileID: 5677785923254841231, guid: e11a56bacdd7d5343977096c298763d4, type: 3}
+  - {fileID: 2805761606118294625, guid: 67c2c50db49c8f1498aea1c5ce5ef390, type: 3}
+  housePrefab: {fileID: 6096578477067117117, guid: 4cd8aa5373362a440af4e47a231d9af8,
     type: 3}
-  housePrefab: {fileID: 3212770976473842168, guid: 45d827fb274a0e143a2154b7cf949f49,
-    type: 3}
+  onGenerationComplete: {fileID: 11400000, guid: 54dae3ded920d564684fc01996afe32e,
+    type: 2}
   treeFeatureShelf: {fileID: 1315842211}
   lakeFeatureShelf: {fileID: 1118456154}
   tileFeatureShelf: {fileID: 600508263}
@@ -656,6 +674,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 6725123164854064550, guid: be43421e0c64bca48949cb2c0e0e1fa4,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6999492293605656976, guid: be43421e0c64bca48949cb2c0e0e1fa4,
         type: 3}
