@@ -40,10 +40,9 @@ public class World : MonoBehaviour
     [Header("Events")]
     public GameEvent onGenerationComplete;
 
-    [Header("Feature Shelfs")]
-    [SerializeField] private GameObject treeFeatureShelf;
-    [SerializeField] private GameObject lakeFeatureShelf;
-    [SerializeField] private GameObject tileFeatureShelf;
+    [Header("Shelfs")]
+    [SerializeField] private GameObject featureSelf;
+    [SerializeField] private GameObject tileShelf;
 
     private bool houseSpawned = false;
     private Vector3 housePosition;
@@ -99,9 +98,11 @@ public class World : MonoBehaviour
                             {
                                 if (perlinNoise >= tileInstance.GetMinThreshold() && perlinNoise <= tileInstance.GetMaxThreshold())
                                 {
+                                    Vector3 waterYOffset = new Vector3(spawnPosition.x, spawnPosition.y - 0.45f, spawnPosition.z);
+
                                     GameObject tilePrefab = tileInstance.GetTile().prefab;
-                                    GameObject tile = Instantiate(tilePrefab, spawnPosition, Quaternion.identity);
-                                    tile.transform.SetParent(tileFeatureShelf.transform);
+                                    GameObject tile = Instantiate(tilePrefab, waterYOffset, Quaternion.identity);
+                                    tile.transform.SetParent(tileShelf.transform);
                                     tile.name = tileInstance.GetTileName();
                                     tilesSpawnedCount++;
 
@@ -121,7 +122,7 @@ public class World : MonoBehaviour
                                 // Generate ground tile if it's within the threshold
                                 GameObject tilePrefab = tileInstance.GetTile().prefab;
                                 GameObject tile = Instantiate(tilePrefab, spawnPosition, Quaternion.identity);
-                                tile.transform.SetParent(tileFeatureShelf.transform);
+                                tile.transform.SetParent(tileShelf.transform);
                                 tile.name = tileInstance.GetTileName();
                                 tilesSpawnedCount++;
 
@@ -156,31 +157,29 @@ public class World : MonoBehaviour
 
                     if (randomValue < featureData.spawnChance)
                     {
-                        GameObject featurePrefab = featureData.prefab;
+                        GameObject featurePrefab = featureData.prefab[Random.Range(0, featureData.prefab.Length)];
 
                         if (featurePrefab != null)
                         {
                             Vector3 featureSpawnPosition = new Vector3(featurePosition.x, featurePosition.y, featurePosition.z);
 
-                            // Initialize the zOffset
                             float zOffset = 0f;
 
-                            // Check if ID is 0 or name is "tree" for height offset and random zOffset
                             if (featureData.ID == 0 || featureData.featureName == "tree")
                             {
-                                featureSpawnPosition.y += 5; // Apply height offset
-                                zOffset = Random.Range(-0.1f, 0.1f); // Apply zOffset for "tree"
+                                featureSpawnPosition.y += 5;
+                                zOffset = Random.Range(-0.1f, 0.1f);
                             }
 
-                            featureSpawnPosition.z += zOffset; // Apply zOffset to the featureSpawnPosition.z
+                            featureSpawnPosition.z += zOffset;
 
                             GameObject feature = Instantiate(featurePrefab, featureSpawnPosition, featureData.rotationOffset);
-                            feature.transform.SetParent(lakeFeatureShelf.transform);
+                            feature.transform.SetParent(featureSelf.transform);
                             featuresSpawnedCount++;
                         }
                     }
 
-                    break; // Exit the loop after finding the matching feature data.
+                    break;
                 }
             }
         }

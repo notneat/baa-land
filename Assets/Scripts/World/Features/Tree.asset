@@ -19,4 +19,8 @@ MonoBehaviour:
   spawnChance: 0.2
   positionOffset: {x: 0, y: 5, z: 0}
   rotationOffset: {x: 0, y: -0.38268346, z: 0, w: 0.9238795}
-  prefab: {fileID: 8340746848934773895, guid: dfd82183385cc284797921ca8ac5cc71, type: 3}
+  prefab:
+  - {fileID: 8340746848934773895, guid: dfd82183385cc284797921ca8ac5cc71, type: 3}
+  - {fileID: 5907764983232781553, guid: fa6a552beacd3674aa48576fe4acc7bb, type: 3}
+  - {fileID: 5677785923254841231, guid: e11a56bacdd7d5343977096c298763d4, type: 3}
+  - {fileID: 2805761606118294625, guid: 67c2c50db49c8f1498aea1c5ce5ef390, type: 3}

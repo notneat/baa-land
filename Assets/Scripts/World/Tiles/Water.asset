@@ -16,4 +16,4 @@ MonoBehaviour:
   tileName: water
   minThreshold: 0.6
   maxThreshold: 1
-  prefab: {fileID: 4850859491327379254, guid: 5757b9289eb463540bac7e4731fd2858, type: 3}
+  prefab: {fileID: 2445657652284860842, guid: 5757b9289eb463540bac7e4731fd2858, type: 3}

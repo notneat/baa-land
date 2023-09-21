@@ -7,45 +7,54 @@ public class WaterTile : MonoBehaviour
     [SerializeField] private float rayDistance;
     [SerializeField] private LayerMask layers;
 
-    public GameObject forwardTile { get; private set; }
-    public GameObject backTile { get; private set; }
-    public GameObject rightTile { get; private set; }
-    public GameObject leftTile { get; private set; }
+    public GameObject forwardTile;
+    public GameObject backTile;
+    public GameObject rightTile;
+    public GameObject leftTile;
 
-    public void StartNeighborCheck()
+    [SerializeField] private GameObject wallForward;
+    [SerializeField] private GameObject wallBack;
+    [SerializeField] private GameObject wallRight;
+    [SerializeField] private GameObject wallLeft;
+
+    private void Start()
     {
-        Vector3 tilePosition = transform.position;
-
-        DetectNeighbor(tilePosition, Vector3.forward, layers, "forward");
-        DetectNeighbor(tilePosition, Vector3.back, layers, "back");
-        DetectNeighbor(tilePosition, Vector3.right, layers, "right");
-        DetectNeighbor(tilePosition, Vector3.left, layers, "left");
+        CheckNeighbor();
     }
 
-    private void DetectNeighbor(Vector3 origin, Vector3 direction, LayerMask layer , string id)
+    private void CheckNeighbor()
     {
-        Ray ray = new Ray(origin, direction);
+        CheckNeighbor(Vector3.forward,forwardTile, wallForward);
+        CheckNeighbor(Vector3.back, backTile, wallBack);
+        CheckNeighbor(Vector3.right, forwardTile, wallRight);
+        CheckNeighbor(Vector3.left, forwardTile, wallLeft);
+    }
 
-        if(Physics.Raycast(ray, out RaycastHit hit, rayDistance, layer))
+    private void CheckNeighbor(Vector3 direction, GameObject tile, GameObject wall)
+    {
+        Vector3 tilePosition = transform.position;
+        Ray ray = new Ray(tilePosition, direction);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, rayDistance, layers))
         {
-            Debug.LogWarning(hit.transform.gameObject + " // " + hit.transform.position + " // " + id);
-            
-            if(direction == Vector3.forward)
-            {
-                this.forwardTile = hit.transform.gameObject;
-            }
-            else if(direction == Vector3.back)
-            {
-                this.backTile = hit.transform.gameObject;
-            }
-            else if (direction == Vector3.right)
-            {
-                this.rightTile = hit.transform.gameObject;
-            }
-            else if (direction == Vector3.left)
-            {
-                this.leftTile = hit.transform.gameObject;
-            }
+            Debug.LogWarning(hit.transform.gameObject + " // " + hit.transform.position + " // " + direction);
+
+            tile = hit.transform.gameObject;
+            HideWalls(wall, tile);
+        }
+    }
+
+    private void HideWalls(GameObject wallObject, GameObject neighborObject)
+    {
+        Debug.Log(neighborObject);
+
+        if (neighborObject.CompareTag("Water"))
+        {
+            wallObject.SetActive(false);
+        }
+        else
+        {
+            wallObject.SetActive(true);
         }
     }
 }

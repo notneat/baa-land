@@ -12,5 +12,5 @@ public class FeatureData : ScriptableObject
     public float spawnChance;
     public Vector3 positionOffset;
     public Quaternion rotationOffset;
-    public GameObject prefab;
+    public GameObject[] prefab;
 }

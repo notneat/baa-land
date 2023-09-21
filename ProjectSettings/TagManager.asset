@@ -4,12 +4,13 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Lake_wall
   - Tile
   - House
   - Feature
   - Swing
   - Tree
+  - Water
+  - Lake_wall
   layers:
   - Default
   - TransparentFX

@@ -26,5 +26,4 @@ public class Feature
     public float GetMinThreshold() { return minThreshold; }
     public float GetMaxThreshold() { return maxThreshold; }
     public string GetFeatureName() {  return featureName; }
-
 }
