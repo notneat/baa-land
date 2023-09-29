@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028326, g: 0.22571333, b: 0.30692202, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -877,22 +877,34 @@ MonoBehaviour:
   perlinScale: 0.03
   perlinOffset: {x: 0, y: 0}
   minDistanceFromHouse: 24
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 8
+  waterMask:
+    serializedVersion: 2
+    m_Bits: 64
   minTreeThreshold: -1
   maxTreeThreshold: 0.5
   treeSpawnChance: 0.4
   minLakeThreshold: 0.6
   maxLakeThreshold: 1
+  tiles:
+  - {fileID: 11400000, guid: f3301267ec55ba74aaabfbaaeafc1f66, type: 2}
+  - {fileID: 11400000, guid: eaf9c192f192cd54c9f38e723a707dc8, type: 2}
+  tileInstances: []
+  features:
+  - {fileID: 11400000, guid: d959e251f6c003d48b54acd7d8b2b1a2, type: 2}
+  featureInstances: []
   lakePrefab: {fileID: 4850859491327379254, guid: 5757b9289eb463540bac7e4731fd2858,
     type: 3}
   tilePrefab: {fileID: 918526242091838871, guid: 6ddd72e4c80922940b31bf36594804e7,
     type: 3}
-  treePrefab: {fileID: 3181324565709423357, guid: c0712734f2a5d44489f152641be57626,
+  treePrefabs: []
+  housePrefab: {fileID: 6096578477067117117, guid: 4cd8aa5373362a440af4e47a231d9af8,
     type: 3}
-  housePrefab: {fileID: 3212770976473842168, guid: 45d827fb274a0e143a2154b7cf949f49,
-    type: 3}
-  treeFeatureShelf: {fileID: 804719256}
-  lakeFeatureShelf: {fileID: 2044650061}
-  tileFeatureShelf: {fileID: 2075211181}
+  onGenerationComplete: {fileID: 0}
+  featureSelf: {fileID: 497799322}
+  tileShelf: {fileID: 2075211181}
 --- !u!4 &592590722
 Transform:
   m_ObjectHideFlags: 0
