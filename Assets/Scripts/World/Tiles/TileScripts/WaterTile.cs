@@ -11,6 +11,7 @@ public class WaterTile : MonoBehaviour
     public GameObject backTile;
     public GameObject rightTile;
     public GameObject leftTile;
+    public GameObject upTile;
 
     [SerializeField] private GameObject wallForward;
     [SerializeField] private GameObject wallBack;
@@ -37,7 +38,7 @@ public class WaterTile : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, rayDistance, layers))
         {
-            Debug.LogWarning(hit.transform.gameObject + " // " + hit.transform.position + " // " + direction);
+            //Debug.LogWarning(hit.transform.gameObject + " // " + hit.transform.position + " // " + direction);
 
             tile = hit.transform.gameObject;
             HideWalls(wall, tile);
@@ -46,8 +47,6 @@ public class WaterTile : MonoBehaviour
 
     private void HideWalls(GameObject wallObject, GameObject neighborObject)
     {
-        Debug.Log(neighborObject);
-
         if (neighborObject.CompareTag("Water"))
         {
             wallObject.SetActive(false);

@@ -41,9 +41,9 @@ public class SwingAxe : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
-        if (collider.GetComponent<Tree>() != null && !canSwing)
+        if (collider.GetComponent<TreeScript>() != null && !canSwing)
         {
-            Tree tree = collider.GetComponent<Tree>();
+            TreeScript tree = collider.GetComponent<TreeScript>();
             tree.Chop(damage);
         }
     }

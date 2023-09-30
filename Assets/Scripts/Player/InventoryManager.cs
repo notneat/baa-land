@@ -23,6 +23,11 @@ public class InventoryManager : MonoBehaviour
     private SlotClass originalSlot;
     private bool isMovingItem;
 
+    private void Awake()
+    {
+        InventoryGUI.enabled = true;
+    }
+
     private void Start()
     {
         slots = new GameObject[slotHolder.transform.childCount];

@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tree : MonoBehaviour
+public class TreeScript : MonoBehaviour
 {
-    private int chopCount;
+    [SerializeField] private int chopCount;
 
     public void Chop(int chopAmount)
     {

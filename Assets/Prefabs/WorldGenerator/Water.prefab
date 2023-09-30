@@ -429,6 +429,7 @@ MonoBehaviour:
   backTile: {fileID: 0}
   rightTile: {fileID: 0}
   leftTile: {fileID: 0}
+  upTile: {fileID: 0}
   wallForward: {fileID: 1582999847794876893}
   wallBack: {fileID: 4131678664205413395}
   wallRight: {fileID: 8593457144746377422}
@@ -462,8 +463,8 @@ MeshCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 1
-  m_LayerOverridePriority: 0
+    m_Bits: 0
+  m_LayerOverridePriority: 1
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1

@@ -19,6 +19,8 @@ public class PlacementSystem : MonoBehaviour
     [SerializeField]
     private GameObject gridVisualization;
 
+    private bool isBuilding;
+
     private GridData floorData, furnitureData;
 
     private Renderer previewRenderer;
@@ -30,10 +32,25 @@ public class PlacementSystem : MonoBehaviour
         StopPlacement();
         floorData = new();
         furnitureData = new();
-        previewRenderer = cellIndicator.GetComponentInChildren<Renderer>();
+        previewRenderer = cellIndicator.GetComponent<Renderer>();
     }
 
-    public void StartPlacement(int ID)
+    public void StartStopPlacement(int ID)
+    {
+        if (!isBuilding)
+        {
+            StartPlacement(ID);
+            isBuilding = true;
+        }
+        else
+        {
+            StopPlacement();
+            isBuilding = false;
+        }
+
+    }
+
+    private void StartPlacement(int ID)
     {
         StopPlacement();
         selectedObjectIndex = database.objectsData.FindIndex(data => data.ID == ID);
@@ -99,6 +116,6 @@ public class PlacementSystem : MonoBehaviour
 
 
         mouseIndicator.transform.position = mousePosition;
-        cellIndicator.transform.position = grid.CellToWorld(gridPosition);
+        cellIndicator.transform.position = new Vector3(grid.CellToWorld(gridPosition).x, 0.011f, grid.CellToWorld(gridPosition).z);
     }
 }

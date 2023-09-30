@@ -16,7 +16,7 @@ public class FollowCamera : MonoBehaviour
 
     private void Start()
     {
-        _camera = GetComponent<Camera>();
+        _camera = GetComponentInChildren<Camera>();
     }
 
     private void Update()
@@ -38,12 +38,15 @@ public class FollowCamera : MonoBehaviour
 
     private void ChangeCameraSize()
     {
-        float scrollInput = Input.GetAxis("Mouse ScrollWheel");
+        if (_camera != null)
+        {
+            float scrollInput = Input.GetAxis("Mouse ScrollWheel");
 
-        float newSize = _camera.orthographicSize * Mathf.Pow(2.0f, -scrollInput * zoomSensitivity);
+            float newSize = _camera.orthographicSize * Mathf.Pow(2.0f, -scrollInput * zoomSensitivity);
 
-        newSize = Mathf.Clamp(newSize, minCameraSize, maxCameraSize);
+            newSize = Mathf.Clamp(newSize, minCameraSize, maxCameraSize);
 
-        _camera.orthographicSize = newSize;
+            _camera.orthographicSize = newSize;
+        }
     }
 }
