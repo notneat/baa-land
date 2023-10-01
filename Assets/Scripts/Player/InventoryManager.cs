@@ -7,21 +7,24 @@ using TMPro;
 public class InventoryManager : MonoBehaviour
 {
     [SerializeField] private Canvas InventoryGUI;
-
     [SerializeField] private GameObject itemCursor;
-
     [SerializeField] private GameObject slotHolder;
-
+    [SerializeField] private GameObject hotbarSlotHolder;
+    [SerializeField] private GameObject hotbarSelector;
     [SerializeField] private SlotClass[] startingItems;
 
     private SlotClass[] items;
 
     private GameObject[] slots;
+    private GameObject[] hotbarSlots;
 
     private SlotClass movingSlot;
     private SlotClass tempSlot;
     private SlotClass originalSlot;
     private bool isMovingItem;
+
+    private int selectedSlotIndex = 0;
+    public ItemClass selectedItem;
 
     private void Awake()
     {
@@ -30,8 +33,15 @@ public class InventoryManager : MonoBehaviour
 
     private void Start()
     {
+
         slots = new GameObject[slotHolder.transform.childCount];
         items = new SlotClass[slots.Length];
+        hotbarSlots = new GameObject[hotbarSlotHolder.transform.childCount];
+
+        for (int i = 0; i < hotbarSlots.Length; i++)
+        {
+            hotbarSlots[i] = hotbarSlotHolder.transform.GetChild(i).gameObject;
+        }
 
         for (int i = 0; i < items.Length; i++)
         {
@@ -106,6 +116,22 @@ public class InventoryManager : MonoBehaviour
                 BeginItemMoveHalf();
             }
         }
+
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            selectedSlotIndex = 0;
+        }
+        else if(Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            selectedSlotIndex = 1;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            selectedSlotIndex = 2;
+        }
+
+        hotbarSelector.transform.position = hotbarSlots[selectedSlotIndex].transform.position;
+        selectedItem = items[selectedSlotIndex + (hotbarSlots.Length * 5)].GetItem();
     }
 
     #region Inventory Utils
@@ -182,7 +208,7 @@ public class InventoryManager : MonoBehaviour
 
     public void RefreshUI()
     {
-        for(int i = 0;i < slots.Length;i++)
+        for(int i = 0; i < slots.Length; i++)
         {
             try
             {
@@ -202,6 +228,33 @@ public class InventoryManager : MonoBehaviour
                 slots[i].transform.GetChild(0).GetComponent<Image>().sprite = null;
                 slots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
                 slots[i].transform.GetChild(1).GetComponent<TMP_Text>().text = "";
+            }
+        }
+        RefreshHotbar();
+    }
+
+    public void RefreshHotbar()
+    {
+        for (int i = 0; i < hotbarSlots.Length; i++)
+        {
+            try
+            {
+                hotbarSlots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
+                hotbarSlots[i].transform.GetChild(0).GetComponent<Image>().sprite = items[i + (hotbarSlots.Length * 5)].GetItem().itemIcon;
+                if (items[i + (hotbarSlots.Length * 5)].GetQuantity() > 1)
+                {
+                    hotbarSlots[i].transform.GetChild(1).GetComponent<TMP_Text>().text = items[i + (hotbarSlots.Length * 5)].GetQuantity().ToString();
+                }
+                else
+                {
+                    hotbarSlots[i].transform.GetChild(1).GetComponent<TMP_Text>().text = "";
+                }
+            }
+            catch
+            {
+                hotbarSlots[i].transform.GetChild(0).GetComponent<Image>().sprite = null;
+                hotbarSlots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
+                hotbarSlots[i].transform.GetChild(1).GetComponent<TMP_Text>().text = "";
             }
         }
     }

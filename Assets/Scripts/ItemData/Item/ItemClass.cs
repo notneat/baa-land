@@ -10,6 +10,7 @@ public abstract class ItemClass : ScriptableObject
 
     public abstract ItemClass GetItem();
     public abstract ToolClass GetTool();
+    public abstract WeaponClass GetWeapon();
     public abstract MiscClass GetMisc();
     public abstract ConsumableClass GetConsumable();
 

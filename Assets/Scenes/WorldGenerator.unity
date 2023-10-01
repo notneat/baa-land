@@ -7344,10 +7344,11 @@ MonoBehaviour:
   worldSize: 64
   perlinScale: 0.03
   perlinOffset: {x: 0, y: 0}
-  minDistanceFromHouse: 16
   waterMask:
     serializedVersion: 2
     m_Bits: 16
+  minWaterTiles: 64
+  worldObjects: []
   tiles:
   - {fileID: 11400000, guid: f3301267ec55ba74aaabfbaaeafc1f66, type: 2}
   - {fileID: 11400000, guid: eaf9c192f192cd54c9f38e723a707dc8, type: 2}

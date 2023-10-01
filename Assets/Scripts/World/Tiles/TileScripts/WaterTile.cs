@@ -18,12 +18,7 @@ public class WaterTile : MonoBehaviour
     [SerializeField] private GameObject wallRight;
     [SerializeField] private GameObject wallLeft;
 
-    private void Start()
-    {
-        CheckNeighbor();
-    }
-
-    private void CheckNeighbor()
+    public void StartCheck()
     {
         CheckNeighbor(Vector3.forward,forwardTile, wallForward);
         CheckNeighbor(Vector3.back, backTile, wallBack);
@@ -38,8 +33,6 @@ public class WaterTile : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, rayDistance, layers))
         {
-            //Debug.LogWarning(hit.transform.gameObject + " // " + hit.transform.position + " // " + direction);
-
             tile = hit.transform.gameObject;
             HideWalls(wall, tile);
         }

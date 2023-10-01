@@ -4,6 +4,7 @@ using TreeEditor;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Tilemaps;
+using UnityEngine.WSA;
 
 public class World : MonoBehaviour
 {
@@ -12,8 +13,11 @@ public class World : MonoBehaviour
     [SerializeField] private float perlinScale;
     [SerializeField] private Vector2 perlinOffset;
     [SerializeField] private LayerMask waterMask;
+    [SerializeField] private int minWaterTiles;
+    public bool restartWorld = false;
     private bool worldGenerationComplete = false;
     public int[,] worldGrid;
+    private List<GameObject> worldObjects = new List<GameObject>();
 
     [Header("Prefabs")]
 
@@ -33,13 +37,13 @@ public class World : MonoBehaviour
     private float expectedTilesAmount;
     private int tilesSpawnedCount;
     private int featuresSpawnedCount;
-    private int featuresThatCantSpawnCound;
-    private int tilesThatCantSpawnCount;
+    private int numOfWaterTiles;
 
     private void Start()
     {
+        restartWorld = false;
         InitializeTiles();
-        expectedTilesAmount = worldSize * worldSize;
+        expectedTilesAmount = (worldSize * worldSize) - 1;
         GetRandomOffset();
 
         worldGrid = new int[(int)worldSize, (int)worldSize];
@@ -51,7 +55,17 @@ public class World : MonoBehaviour
             }
         }
 
-        SpawnTiles();
+        StartCoroutine(SpawnTiles());
+    }
+
+    private void Update()
+    {
+        if(restartWorld)
+        {
+            restartWorld = false;
+            RestartWorld();
+            Debug.LogWarning("Restarting World");
+        }
     }
 
     private void InitializeTiles()
@@ -68,7 +82,7 @@ public class World : MonoBehaviour
             featureInstances.Add(featureInstance);
         }
     }
-    private void SpawnTiles()
+    private IEnumerator SpawnTiles()
     {
         Vector3 offset = new Vector3(worldSize * 2 * 0.5f, 0, worldSize * 2 * 0.5f);
         for (int x = 0; x < worldSize; x++)
@@ -76,7 +90,7 @@ public class World : MonoBehaviour
             for (int z = 0; z < worldSize; z++)
             {
                 Vector3 spawnPosition = new Vector3(x * 2, 0, z * 2) - offset;
-                float perlinNoise = GetPerlinNoiseValue(x, z, perlinScale, perlinOffset); //TODO: Manipular perlin noise
+                float perlinNoise = GetPerlinNoiseValue(x, z, perlinScale, perlinOffset);
                 bool canSpawnTiles = CanSpawnTile(spawnPosition);
 
                 if (canSpawnTiles)
@@ -89,14 +103,17 @@ public class World : MonoBehaviour
                             {
                                 Vector3 waterYOffset = new Vector3(spawnPosition.x, spawnPosition.y - 0.45f, spawnPosition.z);
 
+                                yield return new WaitForSeconds(0.01f);
                                 GameObject tilePrefab = tileInstance.GetTile().prefab;
                                 GameObject tile = Instantiate(tilePrefab, waterYOffset, Quaternion.identity);
                                 tile.transform.SetParent(tileShelf.transform);
                                 tile.name = tileInstance.GetTileName();
                                 tilesSpawnedCount++;
+                                numOfWaterTiles++;
+                                worldObjects.Add(tile);
                                 worldGrid[x, z] = 0;
 
-                                if ((float)expectedTilesAmount < tilesSpawnedCount + featuresSpawnedCount)
+                                if (tilesSpawnedCount > expectedTilesAmount)
                                 {
                                     WorldFinishedGenerating();
                                 }
@@ -109,14 +126,16 @@ public class World : MonoBehaviour
                             if (perlinNoise >= tileInstance.GetMinThreshold() && perlinNoise <= tileInstance.GetMaxThreshold())
                             {
                                 // Generate ground tile if it's within the threshold
+                                yield return new WaitForSeconds(0.01f);
                                 GameObject tilePrefab = tileInstance.GetTile().prefab;
                                 GameObject tile = Instantiate(tilePrefab, spawnPosition, Quaternion.identity);
                                 tile.transform.SetParent(tileShelf.transform);
                                 tile.name = tileInstance.GetTileName();
                                 tilesSpawnedCount++;
+                                worldObjects.Add(tile);
                                 worldGrid[x, z] = 1;
 
-                                if ((float)expectedTilesAmount < tilesSpawnedCount + featuresSpawnedCount)
+                                if (tilesSpawnedCount > expectedTilesAmount)
                                 {
                                     WorldFinishedGenerating();
                                 }
@@ -127,12 +146,12 @@ public class World : MonoBehaviour
                         worldGrid[x, z] = (tileInstance.GetTileName() == "ground") ? 1 : 0;
                     }
                 }
-                SpawnFeatures(perlinNoise, spawnPosition);
+                StartCoroutine(SpawnFeatures(perlinNoise, spawnPosition));
             }
         }
     }
 
-    private void SpawnFeatures(float perlinNoise, Vector3 spawnPosition)
+    private IEnumerator SpawnFeatures(float perlinNoise, Vector3 spawnPosition)
     {
         Vector3 featurePosition = new Vector3(spawnPosition.x, 0, spawnPosition.z);
         foreach (FeatureData featureData in features)
@@ -159,20 +178,33 @@ public class World : MonoBehaviour
 
                         featureSpawnPosition.z += zOffset;
 
+                        yield return new WaitForSeconds(0.01f);
                         GameObject feature = Instantiate(featurePrefab, featureSpawnPosition, featureData.rotationOffset);
                         feature.transform.SetParent(featureSelf.transform);
                         featuresSpawnedCount++;
+                        worldObjects.Add(feature);
                     }
                 }
 
                 break;
             }
         }
+    }
 
-        if ((float)expectedTilesAmount < tilesSpawnedCount + featuresSpawnedCount)
+    private void RestartWorld()
+    {
+        foreach (GameObject tile in worldObjects)
         {
-            WorldFinishedGenerating();
+            Destroy(tile);
         }
+
+        worldObjects.Clear();
+        worldGenerationComplete = false;
+        tilesSpawnedCount = 0;
+        numOfWaterTiles = 0;
+        featuresSpawnedCount = 0;
+        GetRandomOffset();
+        StartCoroutine(SpawnTiles());
     }
 
     private float GetPerlinNoiseValue(int x, int z, float noiseScale, Vector2 noiseOffset)
@@ -201,24 +233,24 @@ public class World : MonoBehaviour
         {
             return true;
         }
-        tilesThatCantSpawnCount++;
         return false;
     }
 
     private void WorldFinishedGenerating()
     {
-        if(!worldGenerationComplete)
+        if (!worldGenerationComplete && numOfWaterTiles > minWaterTiles)
         {
             Debug.Log("Amount of tiles spawned: " + tilesSpawnedCount);
             Debug.Log("Amount of features spawned: " + featuresSpawnedCount);
             int totalAmountOfObjects = tilesSpawnedCount + featuresSpawnedCount;
             Debug.Log("Amount of total objects spawned: " + totalAmountOfObjects);
-
-            Debug.Log("Amount of tiles that couldn't spawn: " + tilesThatCantSpawnCount);
-            Debug.Log("Amount of features that couldn't spawn: " + featuresThatCantSpawnCound);
             Debug.Log("World Generated");
             worldGenerationComplete = true;
             onGenerationComplete.Raise(this);
+        }
+        else
+        {
+            RestartWorld();
         }
     }
 }
