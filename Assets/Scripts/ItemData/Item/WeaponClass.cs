@@ -16,19 +16,20 @@ public class WeaponClass : ItemClass
 
     public enum WeaponType
     {
-        shotgun,
-        rifle
+        Shotgun,
+        Rifle
     }
 
     public enum FiringMode
     {
-        single,
-        automatic
+        Single,
+        Automatic
     }
 
-    public override ItemClass GetItem() { return this; }
-    public override ToolClass GetTool() { return null; }
+    public FiringMode GetFiringMode()
+    {
+        return firingMode;
+    }
+
     public override WeaponClass GetWeapon() { return this; }
-    public override MiscClass GetMisc() { return null; }
-    public override ConsumableClass GetConsumable() { return null; }
 }

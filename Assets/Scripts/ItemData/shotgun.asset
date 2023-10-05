@@ -16,8 +16,8 @@ MonoBehaviour:
   itemIcon: {fileID: -936756751, guid: a2c046f5b5747aa44ac1379c8f9c72e5, type: 3}
   isStackable: 0
   weaponType: 0
-  firingMode: 0
-  weaponMesh: {fileID: -2432090755550338912, guid: 6c40eaf618c811e438ffcf1af4fd9f96,
+  firingMode: 1
+  weaponMesh: {fileID: -2432090755550338912, guid: 53563cb1a24c0b5468ee98e7da105917,
     type: 3}
   damage: 10
   clipSize: 2

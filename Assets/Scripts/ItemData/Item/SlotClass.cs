@@ -35,7 +35,14 @@ public class SlotClass
     public ItemClass GetItem() { return item; }
     public int GetQuantity() { return quantity; }
     public void AddQuantity(int slotQuantity) { quantity += slotQuantity; }
-    public void SubQuantity(int slotQuantity) { quantity -= slotQuantity; }
+    public void SubQuantity(int slotQuantity) 
+    {
+        quantity -= slotQuantity;
+        if(quantity <= 0)
+        {
+            Clear();
+        }
+    }
     public void AddItem(ItemClass item, int quantity)
     {
         this.item = item;
