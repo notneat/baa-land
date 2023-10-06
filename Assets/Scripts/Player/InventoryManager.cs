@@ -12,6 +12,7 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private GameObject hotbarSlotHolder;
     [SerializeField] private GameObject hotbarSelector;
     [SerializeField] private SlotClass[] startingItems;
+    [SerializeField] private GameEvent onHotbarSlotChanged;
 
     private SlotClass[] items;
 

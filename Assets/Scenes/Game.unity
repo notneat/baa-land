@@ -6755,6 +6755,12 @@ PrefabInstance:
       propertyPath: inventory
       value: 
       objectReference: {fileID: 1721301767}
+    - target: {fileID: 652609090124530534, guid: be43421e0c64bca48949cb2c0e0e1fa4,
+        type: 3}
+      propertyPath: bulletPrefab
+      value: 
+      objectReference: {fileID: 6002490729294356991, guid: c13aa0ef26b397349aaaddc02696e75d,
+        type: 3}
     - target: {fileID: 1596935920691026448, guid: be43421e0c64bca48949cb2c0e0e1fa4,
         type: 3}
       propertyPath: movement
@@ -6887,6 +6893,18 @@ PrefabInstance:
       objectReference: {fileID: 1942261339}
     - target: {fileID: 6725123164854064550, guid: be43421e0c64bca48949cb2c0e0e1fa4,
         type: 3}
+      propertyPath: onSwitchHotbarSlot
+      value: 
+      objectReference: {fileID: 11400000, guid: 5e2dd5b0963ad4a43a3ead86d084b10a,
+        type: 2}
+    - target: {fileID: 6725123164854064550, guid: be43421e0c64bca48949cb2c0e0e1fa4,
+        type: 3}
+      propertyPath: onHotbarSlotChanged
+      value: 
+      objectReference: {fileID: 11400000, guid: 5e2dd5b0963ad4a43a3ead86d084b10a,
+        type: 2}
+    - target: {fileID: 6725123164854064550, guid: be43421e0c64bca48949cb2c0e0e1fa4,
+        type: 3}
       propertyPath: startingItems.Array.size
       value: 3
       objectReference: {fileID: 0}
@@ -6926,7 +6944,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3455894966179592368, guid: be43421e0c64bca48949cb2c0e0e1fa4,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1917357797}
   m_SourcePrefab: {fileID: 100100000, guid: be43421e0c64bca48949cb2c0e0e1fa4, type: 3}
 --- !u!224 &1114576900 stripped
 RectTransform:
@@ -10820,7 +10842,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 1113327030}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1917357790}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8e5474236fe0b942954fa12531577c8, type: 3}
@@ -10832,7 +10854,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 1113327030}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1917357790}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b47572c75c4b941be92ec1e3c017db26, type: 3}
@@ -12608,6 +12630,52 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1909450747}
   m_Mesh: {fileID: -5495902117074765545, guid: 14ec107fa0a077f4a8e205d6b657ad6f, type: 3}
+--- !u!1 &1917357790 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3455894966179592368, guid: be43421e0c64bca48949cb2c0e0e1fa4,
+    type: 3}
+  m_PrefabInstance: {fileID: 1113327030}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1917357795 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 652609090124530534, guid: be43421e0c64bca48949cb2c0e0e1fa4,
+    type: 3}
+  m_PrefabInstance: {fileID: 1113327030}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1917357790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2e22205e5ec8e41b3bec913dc67352, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1917357797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1917357790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db76fb911fa93a248ba67e41931b3f8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: 5e2dd5b0963ad4a43a3ead86d084b10a, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1917357795}
+        m_TargetAssemblyTypeName: WeaponManager, Assembly-CSharp
+        m_MethodName: RefreshWeaponData
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1918100099
 GameObject:
   m_ObjectHideFlags: 0

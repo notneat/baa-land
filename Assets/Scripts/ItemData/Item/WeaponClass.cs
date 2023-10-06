@@ -10,25 +10,26 @@ public class WeaponClass : ItemClass
     public FiringMode firingMode;
     public Mesh weaponMesh;
     public int damage;
-    public int clipSize;
+    public int magSize;
+    public int maxAmmoInMag;
+    public int pellets;
+    public float spread;
     public float fireRate;
+    public float timeBetweenShots;
     public float critChance;
+    public float reloadTime;
 
     public enum WeaponType
     {
-        Shotgun,
-        Rifle
+        Rifle,
+        Shotgun
     }
 
     public enum FiringMode
     {
         Single,
-        Automatic
-    }
-
-    public FiringMode GetFiringMode()
-    {
-        return firingMode;
+        Automatic,
+        Burst
     }
 
     public override WeaponClass GetWeapon() { return this; }

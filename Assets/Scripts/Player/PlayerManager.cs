@@ -12,6 +12,5 @@ public class PlayerManager : MonoBehaviour
     private void Update()
     {
         selectedItem = inventory.selectedItem;
-        Debug.Log(selectedItem);
     }
 }
