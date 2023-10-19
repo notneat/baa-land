@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 83cb66966003265499ebd52c120b30ca, type: 3}
-  m_Name: shotgun
+  m_Name: rifle
   m_EditorClassIdentifier: 
-  itemName: shotgun
-  itemIcon: {fileID: -859853607, guid: a2c046f5b5747aa44ac1379c8f9c72e5, type: 3}
+  itemName: rifle
+  itemIcon: {fileID: 1327697945, guid: a2c046f5b5747aa44ac1379c8f9c72e5, type: 3}
   isStackable: 0
-  weaponType: 1
+  weaponType: 0
   firingMode: 0
-  weaponMesh: {fileID: -2432090755550338912, guid: 53563cb1a24c0b5468ee98e7da105917,
+  weaponMesh: {fileID: -5495902117074765545, guid: 5f5d7376bd3b7554c9fa226113ff63f6,
     type: 3}
-  damage: 10
-  magSize: 200
-  maxAmmoInMag: 200
-  pellets: 10
-  spread: 10
-  fireRate: 0.5
+  damage: 50
+  magSize: 10
+  maxAmmoInMag: 10
+  pellets: 1
+  spread: 2
+  fireRate: 0.2
   timeBetweenShots: 0
   critChance: 0.5
-  reloadTime: 1.5
+  reloadTime: 1

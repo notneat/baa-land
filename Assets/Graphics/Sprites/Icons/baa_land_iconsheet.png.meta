@@ -110,10 +110,10 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: icon_wood
+      name: icon_axe
       rect:
         serializedVersion: 2
-        x: 0
+        x: 2
         y: 32
         width: 32
         height: 32
@@ -131,7 +131,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: icon_heal
+      name: icon_shotgun
       rect:
         serializedVersion: 2
         x: 32
@@ -152,7 +152,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: icon_axe
+      name: icon_rifle
       rect:
         serializedVersion: 2
         x: 0
@@ -173,7 +173,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: icon_shotgun
+      name: nothing
       rect:
         serializedVersion: 2
         x: 32
@@ -193,6 +193,48 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: icon_wood
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: df44064d90c9ffd41b48f383ceadc03c
+      internalID: -554161343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon_heal
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c51b52c4eb1b6df4da0d1cf1aa2a0f9e
+      internalID: -1625356879
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -204,10 +246,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      icon_axe: 1327697945
-      icon_heal: -859853607
-      icon_shotgun: -936756751
-      icon_wood: -1617099951
+      icon_axe: -1617099951
+      icon_heal: -1625356879
+      icon_rifle: 1327697945
+      icon_shotgun: -859853607
+      icon_wood: -554161343
+      nothing: -936756751
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

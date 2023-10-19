@@ -14,6 +14,7 @@ public class World : MonoBehaviour
     [SerializeField] private Vector2 perlinOffset;
     [SerializeField] private LayerMask waterMask;
     [SerializeField] private int minWaterTiles;
+    [SerializeField] private float worldBuildSpeed; //Apenas para debug
     public bool restartWorld = false;
     private bool worldGenerationComplete = false;
     public int[,] worldGrid;
@@ -103,7 +104,7 @@ public class World : MonoBehaviour
                             {
                                 Vector3 waterYOffset = new Vector3(spawnPosition.x, spawnPosition.y - 0.45f, spawnPosition.z);
 
-                                yield return new WaitForSeconds(0.01f);
+                                yield return new WaitForSeconds(worldBuildSpeed);
                                 GameObject tilePrefab = tileInstance.GetTile().prefab;
                                 GameObject tile = Instantiate(tilePrefab, waterYOffset, Quaternion.identity);
                                 tile.transform.SetParent(tileShelf.transform);
@@ -178,7 +179,7 @@ public class World : MonoBehaviour
 
                         featureSpawnPosition.z += zOffset;
 
-                        yield return new WaitForSeconds(0.01f);
+                        yield return new WaitForSeconds(worldBuildSpeed);
                         GameObject feature = Instantiate(featurePrefab, featureSpawnPosition, featureData.rotationOffset);
                         feature.transform.SetParent(featureSelf.transform);
                         featuresSpawnedCount++;

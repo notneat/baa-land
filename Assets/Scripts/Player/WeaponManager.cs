@@ -21,9 +21,13 @@ public class WeaponManager : MonoBehaviour
 
     [Header("System values")]
     [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private GameObject weaponHolder;
+    [SerializeField] private Transform shootingPosition;
     [SerializeField] private int remainingBullets;
     [SerializeField] private int storedAmmo;
     [SerializeField] private int bulletsShot;
+    [SerializeField] private float bulletSpeed;
+    [SerializeField] private LineRenderer lineRenderer;
 
     private bool canShoot = true;
     private bool shooting = false;
@@ -62,6 +66,7 @@ public class WeaponManager : MonoBehaviour
             WeaponClass selectedWeapon = inventory.selectedItem.GetWeapon();
 
             mesh = selectedWeapon.weaponMesh;
+            weaponHolder.GetComponent<MeshFilter>().mesh = mesh;
             firingMode = (FiringMode)selectedWeapon.firingMode;
             weaponType = (WeaponType)selectedWeapon.weaponType;
             damage = selectedWeapon.damage;
@@ -134,18 +139,38 @@ public class WeaponManager : MonoBehaviour
     {
         for(int i = 0; i < Mathf.Max(1, pellets); i++)
         {
-            float x = Random.Range(-spread, spread);
-            float y = Random.Range(-spread, spread);
+            Ray ray = new Ray(shootingPosition.position, shootingPosition.forward);
+            RaycastHit hit;
 
-            Vector3 direction = new Vector3(x, y, 0);
+            Vector3 targetPoint;
+            if(Physics.Raycast(ray, out hit))
+            {
+                targetPoint = hit.point;
 
-            GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
-            bullet.GetComponent<Rigidbody>().AddForce(Vector3.forward, ForceMode.Acceleration);
+                //lineRenderer.SetPosition(0, shootingPosition.position);
+                //lineRenderer.SetPosition(1, hit.point);
+                //lineRenderer.enabled = true;
+            }
+            else
+            {
+                targetPoint = ray.GetPoint(128);
+                //lineRenderer.enabled = false;
+            }
+
+            Vector3 directionNoSpread = targetPoint - shootingPosition.position;
+
+            float xSpread = Random.Range(-spread, spread);
+            float ySpread = Random.Range(-spread, spread);
+
+            Vector3 directionWithSpread = directionNoSpread + new Vector3(xSpread, ySpread, 0);
+
+            GameObject bullet = Instantiate(bulletPrefab, shootingPosition.position, Quaternion.identity);
+            bullet.transform.forward = directionWithSpread.normalized;
+            bullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * bulletSpeed, ForceMode.Impulse);
         }
         canShoot = false;
         remainingBullets--;
         Invoke("ResetShot", fireRate);
-
     }
 
     private void Reload()
