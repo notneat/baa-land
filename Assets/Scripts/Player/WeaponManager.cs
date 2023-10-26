@@ -22,12 +22,15 @@ public class WeaponManager : MonoBehaviour
     [Header("System values")]
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private GameObject weaponHolder;
-    [SerializeField] private Transform shootingPosition;
+    private Transform shootingPosition;
     [SerializeField] private int remainingBullets;
     [SerializeField] private int storedAmmo;
     [SerializeField] private int bulletsShot;
     [SerializeField] private float bulletSpeed;
-    [SerializeField] private LineRenderer lineRenderer;
+    [SerializeField] private GameObject dbModel;
+    [SerializeField] private GameObject rifleModel;
+    [SerializeField] private Transform dbShootingPos;
+    [SerializeField] private Transform rifleShootingPos;
 
     private bool canShoot = true;
     private bool shooting = false;
@@ -65,8 +68,6 @@ public class WeaponManager : MonoBehaviour
             weaponEquipped = true;
             WeaponClass selectedWeapon = inventory.selectedItem.GetWeapon();
 
-            mesh = selectedWeapon.weaponMesh;
-            weaponHolder.GetComponent<MeshFilter>().mesh = mesh;
             firingMode = (FiringMode)selectedWeapon.firingMode;
             weaponType = (WeaponType)selectedWeapon.weaponType;
             damage = selectedWeapon.damage;
@@ -78,6 +79,19 @@ public class WeaponManager : MonoBehaviour
             timeBetweenShots = selectedWeapon.timeBetweenShots;
             critChance = selectedWeapon.critChance;
             reloadTime = selectedWeapon.reloadTime;
+
+            if(selectedWeapon.itemName == "shotgun")
+            {
+                shootingPosition = dbShootingPos;
+                dbModel.SetActive(true);
+                rifleModel.SetActive(false);
+            }
+            else
+            {
+                shootingPosition = rifleShootingPos;
+                dbModel.SetActive(false);
+                rifleModel.SetActive(true);
+            }
         }
         else
         {
