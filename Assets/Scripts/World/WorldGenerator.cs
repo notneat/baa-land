@@ -56,7 +56,7 @@ public class World : MonoBehaviour
             }
         }
 
-        StartCoroutine(SpawnTiles());
+        SpawnTiles();
     }
 
     private void Update()
@@ -83,7 +83,7 @@ public class World : MonoBehaviour
             featureInstances.Add(featureInstance);
         }
     }
-    private IEnumerator SpawnTiles()
+    private void SpawnTiles()
     {
         Vector3 offset = new Vector3(worldSize * 2 * 0.5f, 0, worldSize * 2 * 0.5f);
         for (int x = 0; x < worldSize; x++)
@@ -104,7 +104,6 @@ public class World : MonoBehaviour
                             {
                                 Vector3 waterYOffset = new Vector3(spawnPosition.x, spawnPosition.y - 0.45f, spawnPosition.z);
 
-                                yield return new WaitForSeconds(worldBuildSpeed);
                                 GameObject tilePrefab = tileInstance.GetTile().prefab;
                                 GameObject tile = Instantiate(tilePrefab, waterYOffset, Quaternion.identity);
                                 tile.transform.SetParent(tileShelf.transform);
@@ -127,7 +126,6 @@ public class World : MonoBehaviour
                             if (perlinNoise >= tileInstance.GetMinThreshold() && perlinNoise <= tileInstance.GetMaxThreshold())
                             {
                                 // Generate ground tile if it's within the threshold
-                                yield return new WaitForSeconds(0.01f);
                                 GameObject tilePrefab = tileInstance.GetTile().prefab;
                                 GameObject tile = Instantiate(tilePrefab, spawnPosition, Quaternion.identity);
                                 tile.transform.SetParent(tileShelf.transform);
@@ -147,12 +145,12 @@ public class World : MonoBehaviour
                         worldGrid[x, z] = (tileInstance.GetTileName() == "ground") ? 1 : 0;
                     }
                 }
-                StartCoroutine(SpawnFeatures(perlinNoise, spawnPosition));
+                SpawnFeatures(perlinNoise, spawnPosition);
             }
         }
     }
 
-    private IEnumerator SpawnFeatures(float perlinNoise, Vector3 spawnPosition)
+    private void SpawnFeatures(float perlinNoise, Vector3 spawnPosition)
     {
         Vector3 featurePosition = new Vector3(spawnPosition.x, 0, spawnPosition.z);
         foreach (FeatureData featureData in features)
@@ -179,7 +177,6 @@ public class World : MonoBehaviour
 
                         featureSpawnPosition.z += zOffset;
 
-                        yield return new WaitForSeconds(worldBuildSpeed);
                         GameObject feature = Instantiate(featurePrefab, featureSpawnPosition, featureData.rotationOffset);
                         feature.transform.SetParent(featureSelf.transform);
                         featuresSpawnedCount++;
@@ -205,7 +202,7 @@ public class World : MonoBehaviour
         numOfWaterTiles = 0;
         featuresSpawnedCount = 0;
         GetRandomOffset();
-        StartCoroutine(SpawnTiles());
+        SpawnTiles();
     }
 
     private float GetPerlinNoiseValue(int x, int z, float noiseScale, Vector2 noiseOffset)
