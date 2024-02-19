@@ -4268,12 +4268,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldSize: 64
-  perlinScale: 0.03
+  perlinScale: 0.04
   perlinOffset: {x: 0, y: 0}
   waterMask:
     serializedVersion: 2
     m_Bits: 16
-  minWaterTiles: 64
+  minWaterTiles: 128
   worldBuildSpeed: 0
   restartWorld: 0
   tiles:

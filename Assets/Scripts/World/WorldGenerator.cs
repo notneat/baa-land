@@ -35,28 +35,15 @@ public class World : MonoBehaviour
     [SerializeField] private GameObject featureSelf;
     [SerializeField] private GameObject tileShelf;
 
-    private float expectedTilesAmount;
-    private int tilesSpawnedCount;
-    private int featuresSpawnedCount;
-    private int numOfWaterTiles;
+    public float expectedTilesAmount;
+    public int tilesSpawnedCount;
+    public int featuresSpawnedCount;
+    public int numOfWaterTiles;
 
     private void Start()
     {
         restartWorld = false;
-        InitializeTiles();
-        expectedTilesAmount = (worldSize * worldSize) - 1;
-        GetRandomOffset();
-
-        worldGrid = new int[(int)worldSize, (int)worldSize];
-        for (int x = 0; x < worldSize; x++)
-        {
-            for (int z = 0; z < worldSize; z++)
-            {
-                worldGrid[x, z] = -1;
-            }
-        }
-
-        SpawnTiles();
+        InitializeWorld();
     }
 
     private void Update()
@@ -69,8 +56,20 @@ public class World : MonoBehaviour
         }
     }
 
-    private void InitializeTiles()
+    private void InitializeWorld()
     {
+        expectedTilesAmount = (worldSize * worldSize) - 1;
+        GetRandomOffset();
+
+        worldGrid = new int[(int)worldSize, (int)worldSize];
+        for (int x = 0; x < worldSize; x++)
+        {
+            for (int z = 0; z < worldSize; z++)
+            {
+                worldGrid[x, z] = -1;
+            }
+        }
+
         foreach (TileData tileData in tiles)
         {
             Tile tileInstance = new Tile(tileData, tileData.ID, tileData.minThreshold, tileData.maxThreshold, tileData.tileName, tileData.prefab);
@@ -82,7 +81,10 @@ public class World : MonoBehaviour
             Feature featureInstance = new Feature(featureData, featureData.ID, featureData.minThreshold, featureData.maxThreshold, featureData.featureName, featureData.prefab);
             featureInstances.Add(featureInstance);
         }
+
+        SpawnTiles();
     }
+
     private void SpawnTiles()
     {
         Vector3 offset = new Vector3(worldSize * 2 * 0.5f, 0, worldSize * 2 * 0.5f);
@@ -113,9 +115,11 @@ public class World : MonoBehaviour
                                 worldObjects.Add(tile);
                                 worldGrid[x, z] = 0;
 
-                                if (tilesSpawnedCount > expectedTilesAmount)
+                                if (tilesSpawnedCount == expectedTilesAmount)
                                 {
+                                    Debug.Log("tilesCount == expectedTiles");
                                     WorldFinishedGenerating();
+                                    break;
                                 }
 
                                 break; // Exit the loop after finding the matching tile.
@@ -134,9 +138,11 @@ public class World : MonoBehaviour
                                 worldObjects.Add(tile);
                                 worldGrid[x, z] = 1;
 
-                                if (tilesSpawnedCount > expectedTilesAmount)
+                                if (tilesSpawnedCount == expectedTilesAmount)
                                 {
+                                    Debug.Log("tilesCount == expectedTiles");
                                     WorldFinishedGenerating();
+                                    break;
                                 }
 
                                 break; // Exit the loop after finding the matching tile.
@@ -202,7 +208,7 @@ public class World : MonoBehaviour
         numOfWaterTiles = 0;
         featuresSpawnedCount = 0;
         GetRandomOffset();
-        SpawnTiles();
+        InitializeWorld();
     }
 
     private float GetPerlinNoiseValue(int x, int z, float noiseScale, Vector2 noiseOffset)
@@ -236,7 +242,11 @@ public class World : MonoBehaviour
 
     private void WorldFinishedGenerating()
     {
-        if (!worldGenerationComplete && numOfWaterTiles > minWaterTiles)
+        if (numOfWaterTiles < minWaterTiles && tilesSpawnedCount < expectedTilesAmount)
+        {
+            RestartWorld();
+        }
+        else if (!worldGenerationComplete)
         {
             Debug.Log("Amount of tiles spawned: " + tilesSpawnedCount);
             Debug.Log("Amount of features spawned: " + featuresSpawnedCount);
@@ -245,10 +255,6 @@ public class World : MonoBehaviour
             Debug.Log("World Generated");
             worldGenerationComplete = true;
             onGenerationComplete.Raise(this);
-        }
-        else
-        {
-            RestartWorld();
         }
     }
 }
